@@ -1,6 +1,9 @@
 import { useContext, useEffect } from 'react'
 import './App.css'
 import { web3Context } from './context/Web3Context'
+import RegisterVoter from './pages/Voter/RegisterVoter';
+import WalletRequiredState from './components/WalletRequiredState';
+import VotingStatus from './components/ElectionCommision/VotingStatus';
 
 function App() {
 
@@ -11,7 +14,7 @@ function App() {
 
   return (
     <>
-      <h1>voting  Dapp</h1>
+      <h1 className='text-center font-extrabold'>voting  Dapp</h1>
        
        <h4>info</h4>
        {
@@ -50,6 +53,14 @@ function App() {
         }
       </button>
 
+     <RegisterVoter/>
+
+     <VotingStatus/>
+
+
+   
+
+     
 
       
 

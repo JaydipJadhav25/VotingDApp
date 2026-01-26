@@ -19,7 +19,7 @@ export const getWeb3State = async() =>{
            "method" :"eth_requestAccounts"
        });//this retunr array of accounts
 
-        console.log("accounts : " , accounts);
+      console.log("accounts : " , accounts);
 
 
        //3. get only selected account
@@ -43,10 +43,23 @@ export const getWeb3State = async() =>{
        //but on client side this all part handl wallet , 
 
        const provider =  new ethers.BrowserProvider(window.ethereum)//no need to passs url , our broser and wallet hald this internally
+        
+      //  // Corrected syntax
+      //       const userBalance = await provider.getBalance(selectedAccount); 
+      //       const inEthrs = ethers.formatEther(userBalance);
+      //  console.log("user account balance :  ",inEthrs );
+
+
+
 
       //6 now this provider help to get our signer
       const signer = await provider.getSigner();
+
+      // 0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB => mydemo contract
+      // const contractAddress = "0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB" => demo contractm my
+
       const contractAddress = "0xCCC15B5CCAF92d34f3A99c2270920D3Fcf42c290"
+
       // const contractInstance =  new ethers.Contract(contractAddress , abi , provider); this instace only perform read opratiosn not write
       const contractInstance =   new ethers.Contract(contractAddress , abi ,signer);
 
