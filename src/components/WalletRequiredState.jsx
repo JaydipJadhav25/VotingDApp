@@ -1,4 +1,11 @@
+import { useNavigate} from "react-router-dom";
+
 const WalletRequiredState = () => {
+
+
+  const navigate = useNavigate()
+
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
       {/* Icon Placeholder - You can use Lucide-React or Heroicons here */}
@@ -17,7 +24,9 @@ const WalletRequiredState = () => {
       </p>
 
       <button 
-        onClick={() => window.location.reload()} // Or trigger your connect function
+        onClick={() => {
+          navigate("/")
+        }} // Or trigger your connect function
         className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all shadow-sm active:scale-95"
       >
         Connect Wallet

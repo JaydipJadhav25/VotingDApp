@@ -1,14 +1,25 @@
 import {useForm} from "react-hook-form"
 import { useWeb3State } from "../../hooks/useWeb3State";
+import WalletRequiredState from "../../components/WalletRequiredState";
 
 
 const RegisterCandidate = ()=>{
 
     
   //use web3 state to call contract
-  const {  contractInstance } = useWeb3State();
+  const {  contractInstance  , selectedAccount} = useWeb3State();
 
   console.log("register candidate : " , contractInstance , selectedAccount);
+
+   
+     
+    if(!contractInstance){
+        return(
+            <WalletRequiredState/>
+        )
+    }
+
+   
 
 
 

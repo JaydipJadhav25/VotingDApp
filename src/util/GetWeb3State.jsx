@@ -58,7 +58,7 @@ export const getWeb3State = async() =>{
       // 0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB => mydemo contract
       // const contractAddress = "0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB" => demo contractm my
 
-      const contractAddress = "0xCCC15B5CCAF92d34f3A99c2270920D3Fcf42c290"
+      const contractAddress = "0xE07290B44Ec17535f38550E5890602426b53A7D2"
 
       // const contractInstance =  new ethers.Contract(contractAddress , abi , provider); this instace only perform read opratiosn not write
       const contractInstance =   new ethers.Contract(contractAddress , abi ,signer);

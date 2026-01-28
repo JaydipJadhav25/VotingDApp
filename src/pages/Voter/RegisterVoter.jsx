@@ -1,6 +1,8 @@
 import {useForm} from "react-hook-form"
 import { useWeb3State } from "../../hooks/useWeb3State";
 import { toast } from "sonner";
+import WalletRequiredState from "../../components/WalletRequiredState";
+
 
 
 const RegisterVoter = ()=>{
@@ -8,7 +10,21 @@ const RegisterVoter = ()=>{
   //use web3 state to call contract
   const {  contractInstance , selectedAccount} = useWeb3State();
 
+ 
+
   console.log("register voter : " , contractInstance , selectedAccount);
+   
+
+
+  if (!selectedAccount) {
+
+    return (
+     <WalletRequiredState/>
+    )
+  }
+
+
+
 
 
    // Gender Enum Mapping // bec we used indexs in contract
@@ -28,10 +44,10 @@ const { register, handleSubmit, formState: { errors } } = useForm();
     const age = parseInt(data.age);
     const gender = data.gender;
 
-    console.log(name , age , gender)
+    console.log(name , age , gender);
 
-    //  await contractInstance.registerVoter( name, age , gender);
-
+  const tx =    await contractInstance.registerVoter( name, age , gender);
+    console.log("response : " , tx);
     toast.success("suucess !")
 
     
