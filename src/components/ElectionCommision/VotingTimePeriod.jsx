@@ -15,9 +15,31 @@ const VotingTimePeriod = ()=>{
         const startTime = startRef.current.value;
         const endTime = endRef.current.value;
        
-        console.log(startTime,endTime)
-        // await contractInstance.setVotingPeriod(startTime,endTime)
-        // console.log("Voter Time is set successful")
+        // console.log(startTime,endTime)
+              // Convert to milliseconds
+      const startMs = new Date(startTime).getTime();
+      const endMs   = new Date(endTime).getTime();
+
+      // Convert to seconds
+      const startSec = Math.floor(startMs / 1000);
+      const endSec   = Math.floor(endMs / 1000);
+
+      // Get current blockchain time (approx = now)
+      const nowSec = Math.floor(Date.now() / 1000);
+
+      // Calculate difference
+      const startOffset = startSec - nowSec; // seconds from now
+      const duration = endSec - startSec;    // total seconds
+
+      console.log("staring date : " ,  startOffset, " ending : " ,  duration);
+
+
+      //  const res =  await contractInstance.setVotingPeriod(startTime,endTime)
+      //  const res =  await contractInstance.setVotingPeriod(startOffset , duration)
+       
+       const res =  await contractInstance.setVotingPeriod( 0 , 3700) //harcode time for tempory testing
+        console.log("Voter Time is set successful" , res);
+        toast.success("Voter Time is set successful")
       }catch(error){
         toast.error("Error: Voting Time Period");
         console.error(error)
@@ -59,6 +81,8 @@ const VotingTimePeriod = ()=>{
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-gray-700 bg-gray-50 hover:bg-white"
                 required
               />
+
+
             </div>
           </div>
         </div>

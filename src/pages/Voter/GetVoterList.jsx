@@ -21,8 +21,7 @@ function GetVoterList() {
     }
 
     //use useeffect to fetch all list of voter
-    useEffect(()=>{
-    
+    useEffect(()=>{ 
         async function getAllVotersList(){
             try {
                 
@@ -33,7 +32,6 @@ function GetVoterList() {
             } catch (error) {
                 console.log("eror : " , error);
                 toast.error("to fetch voterslist Error!")
-
             }
         }
         getAllVotersList();

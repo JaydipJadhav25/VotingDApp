@@ -66,7 +66,9 @@ const ElectionCommision = ()=>{
     <>
     {
       !isElectionCommision ? <> 
-            <h1>You are not Authorized Person !</h1>
+            <div className="w-full h-screen">
+               <h1 className="text-center mt-6 text-red-500 font-extrabold">You are not Authorized Person !</h1>
+            </div>
       </> :   <>
      <VotingStatus/>
      <br></br>
@@ -74,9 +76,9 @@ const ElectionCommision = ()=>{
      <br></br>
      <VotingTimePeriod/> 
      <br></br>
-     {/* <AnnounceWinner/> */}
+     <AnnounceWinner/>
      <br></br>
-     {/* <EmergencyDeclare/> */}
+     <EmergencyDeclare/>
     </>
     }
     </>

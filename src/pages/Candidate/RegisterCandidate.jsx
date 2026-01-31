@@ -1,10 +1,12 @@
 import {useForm} from "react-hook-form"
 import { useWeb3State } from "../../hooks/useWeb3State";
 import WalletRequiredState from "../../components/WalletRequiredState";
+import { toast } from "sonner";
 
 
 const RegisterCandidate = ()=>{
 
+  
     
   //use web3 state to call contract
   const {  contractInstance  , selectedAccount} = useWeb3State();
@@ -44,14 +46,15 @@ const { register, handleSubmit, formState: { errors } } = useForm();
 
     console.log(name , age , gender , party);
 
-    //  await contractInstance.registerVoter( name, age , gender);
-
-
-    alert("success !");
+    const txs =  await contractInstance.registerCandidate( name, party , age , gender);
+    console.log("reponse : " , txs);
+    // alert("success !");
+    toast.success("success !");
     
    } catch (error) {
     console.log("error : " , error);
-    alert("candidate registration error!")
+    // alert("candidate registration error!") 
+    toast.error("candidate registration error!"+ error)
    }
 
   };

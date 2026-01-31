@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWeb3State } from "../hooks/useWeb3State";
 import { useNavigate } from "react-router-dom"
+import { axiosInstance } from '../config/axiosIntances';
 
 function Wallet() {
   const { 
@@ -12,10 +13,25 @@ function Wallet() {
     handleDissconnectWallet 
   } = useWeb3State();
 
+  const[isAuth , setIsAuth] = useState(false);
   // Helper to shorten address for display (e.g., 0x123...456)
   const formatAddress = (addr) => {
     return addr ? `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}` : '';
   };
+
+  
+  useEffect(()=>{
+    async function getInfo(){
+    try {
+        const res = await axiosInstance.get("/main");
+        console.log("reponse : " , res.data);
+         setIsAuth(true);
+    } catch (error) {
+      console.log("error : " , error);
+    }
+    }
+    getInfo();
+  });
 
 
   const navigate = useNavigate();
@@ -30,6 +46,9 @@ function Wallet() {
     // Main Container - Centers content and sets background
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       
+
+
+
       {/* Card Component */}
       <div className="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
         

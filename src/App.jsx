@@ -8,6 +8,7 @@ import ElectionCommision from './pages/ElectionCommision/ElectionCommision';
 import Wallet from './pages/Wallet';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import CastVote from './pages/castVote/CastVote';
 
 
 
@@ -21,6 +22,7 @@ const AppRoutes = () =>{
   return(
     <Routes> 
       <Route path='/' element ={<Wallet/>}/>
+      <Route path='/castvote' element ={<CastVote/>}/>
       <Route path='/register-voter' element ={<RegisterVoter/>}/>
       <Route path='/register-candidate' element ={<RegisterCandidate/>}/>
       <Route path='/voter-list' element ={<GetVoterList/>}/>

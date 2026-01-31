@@ -13,8 +13,9 @@ const DisplayResult = () => {
         const getWinner = async()=>{
           try{
             const winningCandidateAddress = await contractInstance.winner();
+            console.log("winningcandidate result : " , winningCandidateAddress)
             if(winningCandidateAddress!='0x0000000000000000000000000000000000000000'){
-              setWinner(winningCandidate);
+              setWinner(winningCandidateAddress);
             }
           }catch(error){
             toast.error("Error: Getting Winner");
