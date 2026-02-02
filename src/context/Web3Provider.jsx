@@ -54,6 +54,8 @@ function Web3Provider({ children }) {
       }
     }
 
+
+
     return ()=>{
       window.ethereum.removeListener("accountsChanged" , () => handleAccountChange(setWeb3State))
       window.ethereum.removeListener("chainChanged" , () => handleAccountChange(setWeb3State))
@@ -81,5 +83,9 @@ function Web3Provider({ children }) {
     </web3Context.Provider>
   );
 }
+
+
+
+
 
 export default Web3Provider;
