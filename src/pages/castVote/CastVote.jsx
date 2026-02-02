@@ -10,22 +10,15 @@ function CastVote() {
      return <WalletRequiredState/>
   }
   
+
+
+
   const {register , handleSubmit} = useForm();
 
   async function castVote(data){
    if(!contractInstance) return;
    const voterId = Number(data?.voterId);
    const candidateId = Number(data?.candidateId);
-
-
-//    try {
-//     const res = await contractInstance.castVote(voterId , candidateId);
-//     console.log("cast vote response : " , res);
-//     toast.success("castVote successfully !");
-//    } catch (error) {
-//     console.log("erro : " , error)
-//     toast.error("castVote Error!")
-//    }
 
 
 try {

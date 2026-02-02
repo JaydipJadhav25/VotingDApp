@@ -71,8 +71,10 @@ const ElectionCommision = ()=>{
             </div>
       </> :   <>
      <VotingStatus/>
+     
      <br></br>
      <DisplayResult/>
+
      <br></br>
      <VotingTimePeriod/> 
      <br></br>
