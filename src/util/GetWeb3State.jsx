@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import abi from "../contract/abi.json";
 import axios from "axios";
 import { axiosInstance } from "../config/axiosIntances";
+import { contractInstace } from "../smartContract/contract.config";
 
 export const getWeb3State = async () => {
   try {
@@ -10,6 +11,9 @@ export const getWeb3State = async () => {
     //1.check first wallet
     console.log("wallet  : ", !window.ethereum);
     console.log("wallet  : ", window.ethereum);
+   
+    console.log("contract instance : " , contractInstace);
+
     if (!window.ethereum) {
       throw new Error("wallet is not installed !");
     }
@@ -54,7 +58,7 @@ export const getWeb3State = async () => {
     // 0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB => mydemo contract
     // const contractAddress = "0x739f36b16d8a3EE3f52EC212ae5f171BCCC4f2eB" => demo contractm my
 
-    const contractAddress = "0xE07290B44Ec17535f38550E5890602426b53A7D2";
+    // const contractAddress = "0xE07290B44Ec17535f38550E5890602426b53A7D2";
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,13 +74,13 @@ export const getWeb3State = async () => {
     //send server call
     const reponse = await  axiosInstance.post(`/user/auth/${selectedAccount}` ,  { signature : signature});
     console.log("server response token : " , reponse.data);
-   const token = reponse.data?.auth;
+    const token = reponse.data?.auth;
     //savr token in localstorage
     localStorage.setItem("authTokenDApp" , token);
 
-
+   
     // const contractInstance =  new ethers.Contract(contractAddress , abi , provider); this instace only perform read opratiosn not write
-    const contractInstance = new ethers.Contract(contractAddress, abi, signer);
+    const contractInstance = new ethers.Contract( contractInstace.address , abi , signer);
 
     return { contractInstance, selectedAccount, chainId };
   } catch (error) {
