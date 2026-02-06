@@ -11,6 +11,8 @@ function Web3Provider({ children }) {
     contractInstance: null,
     selectedAccount: null,
     chainId: null,
+    provider : null,
+    signer : null
   });
 
   // handl web3state
@@ -18,9 +20,9 @@ function Web3Provider({ children }) {
     setLoading(true);
     try {
       //get val and set in state
-      const { contractInstance, selectedAccount, chainId } =
+      const { contractInstance, selectedAccount, chainId  , provider , signer} =
         await getWeb3State();
-      setWeb3State({ contractInstance, selectedAccount, chainId });
+      setWeb3State({ contractInstance, selectedAccount, chainId , provider , signer });
       setWalletConnected(true);
     } catch (error) {
       console.error("error in web3state : ", error);
@@ -67,6 +69,7 @@ function Web3Provider({ children }) {
     web3State.contractInstance,
     web3State.selectedAccount,
     web3State.chainId,
+
   );
 
   return (

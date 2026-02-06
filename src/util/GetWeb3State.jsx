@@ -82,7 +82,7 @@ export const getWeb3State = async () => {
     // const contractInstance =  new ethers.Contract(contractAddress , abi , provider); this instace only perform read opratiosn not write
     const contractInstance = new ethers.Contract( contractInstace.address , abi , signer);
 
-    return { contractInstance, selectedAccount, chainId };
+    return { contractInstance, selectedAccount, chainId  ,provider , signer};
   } catch (error) {
     //  console.error(error);
     console.log("error : ", error);

@@ -8,6 +8,6 @@ import { Toaster } from 'sonner'
 createRoot(document.getElementById('root')).render(
   <Web3Provider>
     <App />
-    <Toaster/>
+    <Toaster  position="top-center"/>
   </Web3Provider>
 )
