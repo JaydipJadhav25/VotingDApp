@@ -9,6 +9,7 @@ import Wallet from './pages/Wallet';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import CastVote from './pages/castVote/CastVote';
+import TokenMarket from './pages/TokenMarketPlace/TokenMarket';
 
 
 
@@ -28,6 +29,7 @@ const AppRoutes = () =>{
       <Route path='/voter-list' element ={<GetVoterList/>}/>
       <Route path='/candidate-list' element ={<GetCandidateList/>}/>
        <Route path='/election-commision' element={ <ElectionCommision/>} />
+       <Route  path='/token-market' element={<TokenMarket/>}/>
     </Routes>
   )
 }
@@ -52,6 +54,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
+    
       <Navbar/>
        <AppRoutes/>
        <Footer/>
