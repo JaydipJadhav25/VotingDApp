@@ -7,16 +7,27 @@ import { toast } from "sonner";
 import { contractInstaceToken } from "../../smartContract/tokneContract.config";
 // import { useWallet } from "../../context/WalletConnection";
 
+import sendMoenyAbi from "../../contract/snedMoeny.json"
+
+
+
 function TokenMarket() {
   const { provider, signer, selectedAccount } = useWeb3State();
-
   const [loading , setLoading ] = useState(false);
   
   const [ tokenInfo, setTokenInfo ] = useState({
     balance: 0,
     token: null,
     tokenPrice : 0 ,
+    accountBalance : 0,
+    tokenMarketTokens  : 0,
   });
+
+  const [sendMoenyInstace , setSendMoneyInstace] = useState(undefined);
+  const[sendEthTo , setSendEthTo] = useState({
+    to : undefined,
+    eth : undefined
+  })
 
 
   const [ tokenMarketInstance, setTokenMarketInstance ] = useState(undefined);
@@ -46,9 +57,10 @@ function TokenMarket() {
         // console.log("contracrinstce : " , constractInstace);
         setTokenInstance(constractInstace);//set token instance
         const userBalace = await constractInstace.balanceOf(selectedAccount);
+
         console.log("userbalance : " , userBalace);
         setTokenInfo({
-          balance: Number(userBalace),
+          balance: ethers.formatEther(userBalace , 18) ,
           token: "JAY",
         });
         // toast.success("suucess!");
@@ -65,6 +77,9 @@ function TokenMarket() {
 
 
 
+
+
+
   //2 . create token market instance
     useEffect(() => {
     async function getContractInstaceOFTokenMarket() {
@@ -77,11 +92,16 @@ function TokenMarket() {
           signer,
         );
         const tokenPrice = await constractInstace.tokenPrice();
-        setTokenInfo((prev) => {
-          return{
-            ...prev ,tokenPrice : Number(tokenPrice)
-          }
-        });
+        const contractBalance = await provider.getBalance(contractInstaceTokenMarket.address);
+
+        console.log("contract balance : " , );
+
+       setTokenInfo((prev) => ({
+            ...prev,
+            // Convert BigInt to human-readable string (e.g., "1.5")
+            tokenPrice: ethers.formatUnits(tokenPrice, 18), 
+            accountBalance: ethers.formatEther(contractBalance) 
+          }));
         setTokenMarketInstance(constractInstace);
         //set token price
 
@@ -98,6 +118,68 @@ function TokenMarket() {
 
     getContractInstaceOFTokenMarket();
   }, [signer]);
+
+
+  //to get token market tokens
+   useEffect(() => {
+    async function fetch() {
+      try {
+        if (!tokenInstance) {
+          return;
+        }
+        setLoading(true);
+
+        const holdToken = await tokenInstance?.balanceOf(contractInstaceTokenMarket.address); ;
+       setTokenInfo((prev) => ({
+            ...prev,
+            tokenMarketTokens : ethers.formatEther(holdToken)
+          }));
+      
+
+        // toast.success("suucess!");
+      } catch (error) {
+
+        console.log("error : ", error);
+        toast.error("fialed!");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    fetch();
+  }, [tokenInstance]);
+
+
+
+ 
+  //3.create send moeny
+      useEffect(() => {
+    async function init() {
+      try {
+        setLoading(true);
+        //create contract insatce and get info
+        const address = "0xF7a65A3bA03FaAc178b6E3f31E63B9DbF0403b7B";
+        const constractInstace = new ethers.Contract(
+          address,
+         sendMoenyAbi,
+          signer,
+        );
+    
+       setSendMoneyInstace(constractInstace);
+       console.log("send moeny done.")
+        //set token price
+        // toast.success("suucess!");
+      } catch (error) {
+        console.log("error : ", error);
+        toast.error("fialed!");
+      }finally{
+        setLoading(false);
+      }
+    }
+
+        init();
+  }, [signer]);
+  
 
 
   //buy token
@@ -120,19 +202,24 @@ async function buyToken() {
 
     // Send transaction
     //first calculateTokenPrice 
-    const price = await tokenMarketInstance.calculateTokenPrice(token);
+    // const price = await tokenMarketInstance.calculateTokenPrice(token);
 
-    console.log("price : " , Number(price));
+    // console.log("price : " , Number(price));
 
     // const tx = await tokenMarketInstance.buyGLDToken(token ,{
     //   value : Number(price) //This becomes msg.value
     // });
      
     console.log("token : " , token);
+     
+    
 
      const tx = await tokenMarketInstance.buyGLDToken(token, {
-      value: price, //  Correct
+      value: 100000000000000, //  Correct
     });
+
+     console.log("txxx...........  : " , tx);
+
 
     toast.info("Transaction sent. Waiting for confirmation... ⏳");
 
@@ -233,8 +320,9 @@ async function approve() {
     }
 
     // Send transaction
-    const tx = await  tokenInstance.approve(contractInstaceTokenMarket.address , token);
+    const tx = await  tokenInstance.approve(selectedAccount , token);
     toast.info("Transaction sent. Waiting for confirmation... ⏳");
+
     // Wait for confirmation
     const receipt = await tx.wait(1); // 1 confirmation
 
@@ -243,7 +331,7 @@ async function approve() {
     toast.success("Token approve successfully ✅");
 
   } catch (error) {
-    console.error("token approve Token Error:", error);
+    console.error("token approve  Error:", error);
 
     // Handle user rejection
     if (error.code === 4001) {
@@ -256,6 +344,60 @@ async function approve() {
     setLoading(false);
   }
 }
+
+
+
+async function trnsfer() {
+  try {
+    setLoading(true);
+
+    // Check contract
+    if (!sendMoenyInstace) {
+      toast.error(" sendMoenyInstace :Contract not connected");
+      return;
+    }
+
+    if (!sendEthTo.eth || !sendEthTo.to) {
+      toast.error(" eth and to address requried");
+      return;
+    }
+
+    console.log("send th info : " , sendEthTo.eth  , sendEthTo.to)
+
+
+    // Send transaction
+    const tx = await sendMoenyInstace.trnsfer(sendEthTo.to , {
+      value : sendEthTo.eth
+    });
+
+    toast.info("Transaction sent. Waiting for confirmation... ⏳");
+
+    // Wait for confirmation
+    const receipt = await tx.wait(1); // 1 confirmation
+
+    console.log("Transaction confirmed:", receipt);
+
+    toast.success("send eth successfully ✅");
+
+  } catch (error) {
+    console.error("send eth Error:", error);
+
+    // Handle user rejection
+    if (error.code === 4001) {
+      toast.error("Transaction rejected ❌");
+    } else {
+      toast.error("send eth failed!");
+    }
+
+  } finally {
+    setLoading(false);
+  }
+}
+
+
+console.log("send th info : " , sendEthTo.eth  , sendEthTo.to)
+
+
 
 
 
@@ -273,11 +415,29 @@ async function approve() {
       {/* --- Header Card --- */}
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl overflow-hidden mb-6">
         <div className="bg-orange-500 p-4 text-center">
+
           <h1 className="text-3xl font-extrabold text-white font-stretch-semi-condensed uppercase tracking-wider">
             Token Market
           </h1>
         </div>
+
         <div className="p-6 space-y-2 bg-white">
+
+           <div className="flex justify-between pt-2">
+            <span className="text-gray-500 font-medium">TokenMarket Balance</span>
+            <span className="text-green-600 font-bold"> {tokenInfo.accountBalance}</span>
+          </div>
+
+          <div className="flex justify-between pt-2">
+            <span className="text-gray-500 font-medium">TokenMarket Tokens</span>
+            <span className="text-green-600 font-bold"> {tokenInfo.tokenMarketTokens}</span>
+          </div>
+
+          {/* <div className="flex justify-between pt-2">
+            <span className="text-gray-500 font-medium">TokenMarket Tokens</span>
+            <span className="text-green-600 font-bold"> {tokenInfo.tokenMarketTokens}</span>
+          </div> */}
+
           <div className="flex justify-between border-b border-gray-100 pb-2">
             <span className="text-gray-500 font-medium">Token Name</span>
             <span className="text-blue-900 font-bold">{tokenInfo.token}</span>
@@ -287,15 +447,72 @@ async function approve() {
             <span className="text-blue-900 font-bold">${tokenInfo.tokenPrice} eths</span>
           </div>
           <div className="flex justify-between pt-2">
-            <span className="text-gray-500 font-medium">Your Balance</span>
+            <span className="text-gray-500 font-medium">Your Tokens</span>
             <span className="text-green-600 font-bold">{tokenInfo.balance} {tokenInfo.token}</span>
           </div>
+
         </div>
       </div>
 
       {/* --- Action Forms Container --- */}
       <div className="w-full max-w-md bg-white shadow-lg rounded-2xl p-6 space-y-6">
         
+       
+
+           
+          
+          {/* send eth to other user  */}
+           <form
+         onSubmit={(e)=>{
+          e.preventDefault();
+        }}
+        className="flex flex-col space-y-2">
+          <label className="text-sm font-semibold text-gray-700 ml-1">Transfer</label>
+          <div className="flex gap-2">
+            <input
+              type="string"
+              placeholder="address"
+               onChange={(e)=>{
+                setSendEthTo((prev) =>{
+                  return{
+                    ...prev , to : e.target.value
+                  }
+                })
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition"
+            />
+
+             <input
+              type="number"
+              placeholder="Amount"
+               onChange={(e)=>{
+                setSendEthTo((prev) =>{
+                  return{
+                    ...prev , eth : e.target.value
+                  }
+                })
+              }}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition"
+            />
+
+          
+            <button
+            onClick={()=>{
+            trnsfer();
+            }}
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+              transfer
+            </button>
+          </div>
+
+
+        </form>
+
+
+
+
+
+
         {/* Buy Form */}
         <form 
         onSubmit={(e)=>{
@@ -323,6 +540,11 @@ async function approve() {
         </form>
 
         <hr className="border-gray-100" />
+
+
+    
+
+
 
         {/* Sell Form */}
         <form
