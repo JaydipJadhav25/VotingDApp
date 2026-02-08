@@ -63,21 +63,21 @@ export const getWeb3State = async () => {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //to send data to server and  gen token for autherntication
-    const message = "welcome to voting Dapp , you accespt terms and conditions!";
-    const signature = await signer.signMessage(message); //create singeture // take from user
+    // const message = "welcome to voting Dapp , you accespt terms and conditions!";
+    // const signature = await signer.signMessage(message); //create singeture // take from user
 
-    console.log("signature : " , signature);
+    // console.log("signature : " , signature);
 
     // const dataSignature = {
     //   signature
     // }
     //send server call
-    const reponse = await  axiosInstance.post(`/user/auth/${selectedAccount}` ,  { signature : signature});
-    console.log("server response token : " , reponse.data);
-    const token = reponse.data?.auth;
+    // const reponse = await  axiosInstance.post(`/user/auth/${selectedAccount}` ,  { signature : signature});
+    // console.log("server response token : " , reponse.data);
+    // const token = reponse.data?.auth;
     //savr token in localstorage
-    localStorage.setItem("authTokenDApp" , token);
-
+    // localStorage.setItem("authTokenDApp" , token);
+//////////////////////////////////////////////////////////////////////////////////////
    
     // const contractInstance =  new ethers.Contract(contractAddress , abi , provider); this instace only perform read opratiosn not write
     const contractInstance = new ethers.Contract( contractInstace.address , abi , signer);

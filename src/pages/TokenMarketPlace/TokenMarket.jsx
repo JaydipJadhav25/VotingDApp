@@ -51,7 +51,7 @@ function TokenMarket() {
         const constractInstace = new ethers.Contract(
           contractInstaceToken.address,
           contractInstaceToken.abi,
-          provider,
+          signer,
         );
         //get info fron intnce
         // console.log("contracrinstce : " , constractInstace);
@@ -211,16 +211,10 @@ async function buyToken() {
     // });
      
     console.log("token : " , token);
-     
-    
-
      const tx = await tokenMarketInstance.buyGLDToken(token, {
       value: 100000000000000, //  Correct
     });
-
      console.log("txxx...........  : " , tx);
-
-
     toast.info("Transaction sent. Waiting for confirmation... ⏳");
 
     // Wait for confirmation
@@ -264,7 +258,10 @@ async function sellToken() {
     }
 
     // Send transaction
-    const tx = await tokenMarketInstance.sellGLDToken(token);
+    // const tokenInEth =  ethers.parseEther(token , 18);
+     const tokenValueWei = ethers.parseEther(token,18);
+
+    const tx = await tokenMarketInstance.sellGLDToken(tokenValueWei);
 
     toast.info("Transaction sent. Waiting for confirmation... ⏳");
 
@@ -319,8 +316,11 @@ async function approve() {
       return;
     }
 
+     const tokenValueWei = ethers.parseEther(token,18);
+     console.log("token val : " , tokenValueWei , tokenInstance);
     // Send transaction
-    const tx = await  tokenInstance.approve(selectedAccount , token);
+    const tokenMarketadd = "0x9157dB1da142B1AFdCACf855332261083F1C9cdc"
+    const tx = await  tokenInstance.approve(tokenMarketadd, tokenValueWei);
     toast.info("Transaction sent. Waiting for confirmation... ⏳");
 
     // Wait for confirmation
@@ -421,37 +421,55 @@ console.log("send th info : " , sendEthTo.eth  , sendEthTo.to)
           </h1>
         </div>
 
-        <div className="p-6 space-y-2 bg-white">
+       <div className="bg-white p-6 rounded-b-2xl">
+  
+  {/* Section 1: Market Contract Status (Liquidity) */}
+  <div className="space-y-3 mb-6">
+    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Market Liquidity</h3>
+    
+    <div className="flex justify-between items-center">
+      <span className="text-gray-600 font-medium">Contract ETH Balance</span>
+      <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded text-sm">
+        {tokenInfo.accountBalance} ETH
+      </span>
+    </div>
 
-           <div className="flex justify-between pt-2">
-            <span className="text-gray-500 font-medium">TokenMarket Balance</span>
-            <span className="text-green-600 font-bold"> {tokenInfo.accountBalance}</span>
-          </div>
+    <div className="flex justify-between items-center">
+      <span className="text-gray-600 font-medium">Tokens Available for Sale</span>
+      <span className="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded text-sm">
+        {tokenInfo.tokenMarketTokens}
+      </span>
+    </div>
+  </div>
 
-          <div className="flex justify-between pt-2">
-            <span className="text-gray-500 font-medium">TokenMarket Tokens</span>
-            <span className="text-green-600 font-bold"> {tokenInfo.tokenMarketTokens}</span>
-          </div>
+  <hr className="border-dashed border-gray-200 my-4" />
 
-          {/* <div className="flex justify-between pt-2">
-            <span className="text-gray-500 font-medium">TokenMarket Tokens</span>
-            <span className="text-green-600 font-bold"> {tokenInfo.tokenMarketTokens}</span>
-          </div> */}
+  {/* Section 2: Token Specifics */}
+  <div className="space-y-3 mb-6">
+    <div className="flex justify-between">
+      <span className="text-gray-500">Token Name</span>
+      <span className="text-blue-900 font-bold">{tokenInfo.token}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-gray-500">Price per Token</span>
+      <span className="text-blue-900 font-bold">{tokenInfo.tokenPrice} ETH</span>
+    </div>
+  </div>
 
-          <div className="flex justify-between border-b border-gray-100 pb-2">
-            <span className="text-gray-500 font-medium">Token Name</span>
-            <span className="text-blue-900 font-bold">{tokenInfo.token}</span>
-          </div>
-          <div className="flex justify-between border-b border-gray-100 pb-2">
-            <span className="text-gray-500 font-medium">Price</span>
-            <span className="text-blue-900 font-bold">${tokenInfo.tokenPrice} eths</span>
-          </div>
-          <div className="flex justify-between pt-2">
-            <span className="text-gray-500 font-medium">Your Tokens</span>
-            <span className="text-green-600 font-bold">{tokenInfo.balance} {tokenInfo.token}</span>
-          </div>
+  {/* Section 3: User Wallet (Highlighted) */}
+  <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex justify-between items-center">
+    <div>
+      <p className="text-xs text-green-600 font-semibold uppercase">Your Wallet</p>
+      <p className="text-green-800 font-bold text-lg">{tokenInfo.balance}</p>
+    </div>
+    <span className="text-green-600 text-sm font-medium bg-white px-2 py-1 rounded border border-green-200 shadow-sm">
+      {tokenInfo.token}
+    </span>
+  </div>
 
-        </div>
+</div>
+
+
       </div>
 
       {/* --- Action Forms Container --- */}
